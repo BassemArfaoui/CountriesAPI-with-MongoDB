@@ -577,38 +577,39 @@ app.get('/apikey',async (req, res) => {
   }
 })
 
-// app.post('/bearerToken', async (req, res) => {
-//   const { email, password } = req.body;
 
-//   try {
-//     // Find the user by email
-//     const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+app.post('/bearerToken', async (req, res) => {
+  const { email, password } = req.body;
 
-//     if (result.rows.length === 0) {
-//       return res.status(401).json({ error: 'Invalid email or password' });
-//     }
+  try {
+    // Find the user by email
+    const result = await User.find({email:email});
 
-//     const user = result.rows[0];
+    if (result.length === 0) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
-//     // Check if the password is correct
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
+    const user = result[0];
 
-//     if (!isPasswordValid) {
-//       return res.status(401).json({ error: 'Invalid email or password' });
-//     }
+    // Check if the password is correct
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-//     // Generate a JWT token
-//     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
-//     // Store the token in the users table
-//     await db.query('UPDATE users SET bearer_token = $1 WHERE id = $2', [token, user.id]);
+    // Generate a JWT token
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-//     return res.json({ token });
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+    // Store the token in the users table
+    await User.updateOne({$set : {bearer_token : token}});
+
+    return res.json({ token });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 
