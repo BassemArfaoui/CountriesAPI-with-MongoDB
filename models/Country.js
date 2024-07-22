@@ -14,8 +14,8 @@ const countrySchema = new mongoose.Schema({
     currency_code: { type: String  ,default:null},
     currency_name: { type: String  ,default:null},
     currency_symbol: { type: String  ,default:null},
-    language_code: { type: String  ,default:null},
-    language_name: { type: String  ,default:null},
+    lang_code: { type: String  ,default:null},
+    lang_name: { type: String  ,default:null},
     cctld: { type: String  ,default:null}
   });
   

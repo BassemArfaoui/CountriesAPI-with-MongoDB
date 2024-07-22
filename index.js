@@ -141,7 +141,8 @@ async function deleteCountry(id)
 
 async function deleteAll()
 {
-  const result = Country.deleteMany({});
+  const result =await Country.deleteMany({});
+  console.log(result);
   return {Success:"All countries deleted"};
 }
 
@@ -527,15 +528,17 @@ app.delete('/delete/:id', async (req, res) => {
   }
 });
 
-// app.delete('countries/clear', authenticateToken,async (req, res) => {
-//   try {
-//     const deletedCountries = await deleteAll();
-//     res.json({Success:'All Countries deleted successfully'});
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+
+
+app.delete('/countries/clear', async (req, res) => {
+  try {
+    const deletedCountries = await deleteAll();
+    res.json({Success:'All Countries deleted successfully'});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 
