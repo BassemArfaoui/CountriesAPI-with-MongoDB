@@ -14,7 +14,7 @@ import Country from "./models/Country.js";
 
 
 
-
+//init
 const app = express();
 const port = 3000;
 const saltRounds=10;
@@ -30,20 +30,6 @@ async function connection() {
   console.log("database connected")
 }
 connection().catch(err => console.log(err));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -113,7 +99,6 @@ async function deleteCountry(id)
   return result;
 }
 
-
 async function deleteAll()
 {
   const result =await Country.deleteMany({});
@@ -126,14 +111,11 @@ async function addUser(email,password){
   return result;
 }
 
-
 async function addApiKey(api)
 {
   const result = await Apikey.create({apikey:api});
   return result;
 }
-
-
 
 async function getApiKeys()
 {
@@ -198,8 +180,6 @@ async function authenticateUser(req, res, next){
   }
 };
 
-
-
 async function requireApiKey (req, res, next){
   const apiKey = req.headers.api_key || req.query.api_key;
 
@@ -231,44 +211,42 @@ async function requireApiKey (req, res, next){
   }
 };
 
-// async function authenticateToken(req, res, next){
-//   const authHeader = req.headers.authorization;
+async function authenticateToken(req, res, next){
+  const authHeader = req.headers.authorization;
 
-//   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-//     return res.status(401).json({ error: 'Missing or invalid authorization header' });
-//   }
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid authorization header' });
+  }
 
-//   const token = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1];
 
-//   try {
-//     // Verify the token
-//     const payload = jwt.verify(token, JWT_SECRET);
+  try {
+    // Verify the token
+    const payload = jwt.verify(token, JWT_SECRET);
 
-//     // Find the user by ID from the token payload
-//     const result = await db.query('SELECT * FROM users WHERE id = $1', [payload.userId]);
+    // Find the user by ID from the token payload
+    const result = await User.find({_id:payload.userId});
 
-//     if (result.rows.length === 0) {
-//       return res.status(401).json({ error: 'Invalid token' });
-//     }
+    if (result.length === 0) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
 
-//     const user = result.rows[0];
+    const user = result[0];
 
-//     // Check if the token matches the stored bearer token
-//     if (user.bearer_token !== token) {
-//       return res.status(401).json({ error: 'Invalid token' });
-//     }
+    // Check if the token matches the stored bearer token
+    if (user.bearer_token !== token) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
 
-//     // Attach the user information to the request object
-//     req.user = user;
+    // Attach the user information to the request object
+    req.user = user;
 
-//     next();
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(401).json({ error: 'Invalid token' });
-//   }
-// };
-
-
+    next();
+  } catch (err) {
+    console.error(err);
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+};
 
 
 
@@ -453,7 +431,7 @@ app.get('/countries/capital/:capital',requireApiKey,  async (req, res) => {
 
 
 //post request
-app.post('/add', async (req, res) => {
+app.post('/add',authenticateToken , async (req, res) => {
 
   try
   {
@@ -468,7 +446,7 @@ app.post('/add', async (req, res) => {
 
 
 //patch request
-app.patch('/update/:id', async (req, res) => {
+app.patch('/update/:id',authenticateToken , async (req, res) => {
   const countryId = req.params.id;
   const updates = req.body;
 
@@ -488,9 +466,8 @@ app.patch('/update/:id', async (req, res) => {
 });
 
 
-
  //delete request
-app.delete('/delete/:id', async (req, res) => {
+app.delete('/delete/:id',authenticateToken , async (req, res) => {
   const countryId = req.params.id;
   try {
     const deletedCountry = await deleteCountry(countryId);
@@ -506,7 +483,7 @@ app.delete('/delete/:id', async (req, res) => {
 });
 
 
-app.delete('/countries/clear', async (req, res) => {
+app.delete('/countries/clear',authenticateToken , async (req, res) => {
   try {
     const deletedCountries = await deleteAll();
     res.json({Success:'All Countries deleted successfully'});
@@ -551,7 +528,6 @@ app.post('/register', async (req, res) => {
     return res.status(500).json({ Error: 'Internal Server Error' });
   }
 });
-
 
 
 app.get('/apikey',async (req, res) => {
@@ -607,8 +583,9 @@ app.post('/bearerToken', async (req, res) => {
 
 //documentation
 app.get('/', async (req,res)=>{
-
+  res.redirect('https://documenter.getpostman.com/view/36645222/2sA3kUGhjm')
 });
+  
 
 
 
