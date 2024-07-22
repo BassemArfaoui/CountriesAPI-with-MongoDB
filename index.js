@@ -120,22 +120,11 @@ async function getCountriesByCapital(capital){
 
 
 
-// async function updateCountry(id, updates) {
-//   const keys = Object.keys(updates);
-//   const values = Object.values(updates);
-//   const setClause = keys.map((key, index) => `${key} = $${index + 2}`).join(', ');
-
-//   const query = `
-//     UPDATE countries
-//     SET ${setClause}
-//     WHERE id = $1
-//     RETURNING *;
-//   `;
-
-//   const result = await db.query(query, [id, ...values]);
-
-//   return result.rows[0];
-// }
+async function updateCountry(id, updates) {
+  const result= await Country.updateOne({_id:id},{$set:updates});
+  console.log(result);
+  return result;
+}
 
 // async function deleteCountry(id)
 // {
@@ -362,6 +351,10 @@ app.use(express.json());
 
 
 
+
+
+
+
 //get routes
 app.get('/countries', async (req, res) => {
   const queryParams = req.query;
@@ -539,7 +532,7 @@ app.get('/countries/capital/:capital', async (req, res) => {
 
 
 // //post request
-// app.post('/add', authenticateToken ,async (req, res) => {
+// app.post('/add', async (req, res) => {
 //   const {
 //     country_code,
 //     country_name,
@@ -587,24 +580,7 @@ app.get('/countries/capital/:capital', async (req, res) => {
 
 
 // //patch request
-// app.patch('/update/:id',authenticateToken, async (req, res) => {
-//   const countryId = req.params.id;
-//   const updates = req.body;
 
-//   try {
-//     // Update the country data
-//     const updatedCountry = await updateCountry(countryId, updates);
-
-//     if (updatedCountry) {
-//       res.json(updatedCountry);
-//     } else {
-//       res.status(404).json({ error: 'Country not found' });
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
 
 
 
