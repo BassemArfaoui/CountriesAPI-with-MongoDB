@@ -458,6 +458,31 @@ app.get('/country/code/:code', async (req, res) => {
 });
 
 
+app.get('/countries/idd/:idd', async (req, res) => {
+  const idd= req.params.idd;
+  try{
+      const country_arr= await getCountryByIdd(idd);
+      if (country_arr.length!==0)
+      {
+        res.json(country_arr);
+      }
+      else
+      {
+        res.status(404).json({Error:`No Country With Idd code ${idd} `});
+      }
+    }
+    catch(err)
+    {
+      console.log(err.message);
+      res.status(404).json({Error:'Bad Input Type'})
+    }
+
+});
+
+
+
+
+
 
 
 
