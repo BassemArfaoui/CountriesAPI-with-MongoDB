@@ -103,7 +103,10 @@ async function getCountriesByName(name){
   return result;
   }
   
-  
+async function getCountriesByCapital(capital){
+    const result = await Country.find({capital:{ $regex:`^${capital}`, $options:'i'}});
+    return result;
+    }
 
 
 
