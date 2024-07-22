@@ -91,7 +91,12 @@ console.log(result)
 return result;
 }
 
-
+async function getCountryByIdd(idd)
+{
+const  result= await Country.find({idd_code:idd});
+console.log(result);
+return result;
+}
 
 
 
