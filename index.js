@@ -50,6 +50,11 @@ user1.save();
 
 
 
+
+
+
+
+//async functions (database function)
 async function getCountries()
 {
   try
@@ -66,10 +71,14 @@ async function getCountries()
 
 
 
-// //async functions (database function)
 
 
 
+async function getRandomCountry() {
+  const randomCountry = await Country.aggregate([{ $sample: { size: 1 } }]);
+  return randomCountry;
+
+}
 
 
 
