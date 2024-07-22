@@ -157,7 +157,10 @@ function checkPassword(password){
   return passwordRegex.test(password);
 }
 
-
+function generateApiKey(length) {
+  const bytes = crypto.randomBytes(length);
+  return bytes.toString('hex');
+}
 
 
 
@@ -559,7 +562,20 @@ app.post('/register', async (req, res) => {
 
 
 
-
+app.get('/apikey',async (req, res) => {
+  try
+  {
+    const api=generateApiKey(25);
+    const hashed_api=await bcrypt.hash(api, saltRounds);
+    const result=await addApiKey(hashed_api);
+    res.json({API_Key:api});
+  }
+  catch(err)
+  {
+    console.log(err.message);
+    res.status(400).json({Error:'Something went wrong ,Please Try again'});
+  }
+})
 
 // app.post('/bearerToken', async (req, res) => {
 //   const { email, password } = req.body;
