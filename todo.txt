@@ -1,0 +1,12 @@
+finish all routes (done)
+
+
+manage authentification : 
+-register/login
+-generate API key
+-Bearer token
+
+add documentaion 
+
+
+
