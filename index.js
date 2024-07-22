@@ -35,7 +35,7 @@ connection().catch(err => console.log(err));
 
 
 
-//create the user database :
+
 
 
 
@@ -50,16 +50,10 @@ connection().catch(err => console.log(err));
 //async functions (database function)
 async function getCountries()
 {
-  try
-  {
+
     const result = await Country.find();
-    console.log(result);
     return result;
-  }
-  catch(err)
-  {
-    console.log(err);
-  }
+
 }
 
 async function getRandomCountry() {
@@ -174,35 +168,37 @@ app.use(express.json());
 
 
 //custom middleware
-// async function authenticateUser(req, res, next){
-//   const credentials = auth(req);
+async function authenticateUser(req, res, next){
+  const credentials = auth(req);
 
-//   if (!credentials) {
-//     res.statusCode = 401;
-//     res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
-//     return res.json({ Error: 'Missing credentials' });
-//   }
+  if (!credentials) {
+    res.statusCode = 401;
+    res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+    return res.json({ Error: 'Missing credentials' });
+  }
 
-//   const { name, pass } = credentials;
+  const { name, pass } = credentials;
+  console.log(name, pass);
+  try {
+    // Check if the user exists and the password is correct
+    const user = await User.find({email:name});
+    console.log(user);
+    if (user.length === 0 || !(await bcrypt.compare(pass, user[0].password))) {
+      res.statusCode = 401;
+      res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
+      return res.json({ Error: 'Invalid credentials' });
+    }
 
-//   try {
-//     // Check if the user exists and the password is correct
-//     const user = await db.query('SELECT * FROM users WHERE email = $1', [name]);
+    // Authentication successful, call the next middleware
+    next();
+  } catch (err) {
+    console.error(err);
+    res.statusCode = 500;
+    return res.json({ Error: 'Internal Server Error' });
+  }
+};
 
-//     if (user.rows.length === 0 || !(await bcrypt.compare(pass, user.rows[0].password))) {
-//       res.statusCode = 401;
-//       res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"');
-//       return res.json({ Error: 'Invalid credentials' });
-//     }
 
-//     // Authentication successful, call the next middleware
-//     next();
-//   } catch (err) {
-//     console.error(err);
-//     res.statusCode = 500;
-//     return res.json({ Error: 'Internal Server Error' });
-//   }
-// };
 
 // async function requireApiKey (req, res, next){
 //   console.log(req.headers,'separator', req.query);
@@ -284,7 +280,7 @@ app.use(express.json());
 
 
 //get routes
-app.get('/countries', async (req, res) => {
+app.get('/countries',authenticateUser, async (req, res) => {
   const queryParams = req.query;
   try {
     let countries;
