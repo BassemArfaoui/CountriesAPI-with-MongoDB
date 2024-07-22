@@ -139,11 +139,11 @@ async function deleteCountry(id)
 
 
 
-// async function deleteAll()
-// {
-//   const result = await db.query("DELETE FROM countries RETURNING *");
-//   return result.rows;
-// }
+async function deleteAll()
+{
+  const result = Country.deleteMany({});
+  return {Success:"All countries deleted"};
+}
 
 
 // async function addUser(email,password){
