@@ -431,6 +431,26 @@ app.get('/country/id/:id', async (req, res) => {
 });
 
 
+app.get('/country/code/:code', async (req, res) => {
+  const code= req.params.code;
+  try{
+      const country= await getCountryByCode(code);
+      if (country)
+      {
+        res.json(country);
+      }
+      else 
+      {
+        res.status(404).json({Error:`No Country With code ${code} `});
+      }
+    }
+    catch(err)
+    {
+      console.log(err.message);
+      res.status(404).json({Error:'Bad Input Type'})
+    }
+
+});
 
 
 
