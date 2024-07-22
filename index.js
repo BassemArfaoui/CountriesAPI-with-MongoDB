@@ -69,16 +69,13 @@ async function getCountries()
   }
 }
 
-
-
-
-
-
 async function getRandomCountry() {
   const randomCountry = await Country.aggregate([{ $sample: { size: 1 } }]);
   return randomCountry;
 
 }
+
+
 
 
 
@@ -329,7 +326,7 @@ app.use(express.json());
 
 
 
-// //get routes
+//get routes
 app.get('/countries', async (req, res) => {
   const queryParams = req.query;
   try {
@@ -384,6 +381,19 @@ app.get('/countries', async (req, res) => {
     res.status(404).json({ Error: 'Bad Filter ' });
   }
 });
+
+
+app.get('/random', async (req, res) => {
+  const country = (await getRandomCountry())[0];
+  res.json(country);
+});
+
+
+
+
+
+
+
 
 
 
