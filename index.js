@@ -491,7 +491,6 @@ app.get('/countries/idd/:idd', async (req, res) => {
 });
 
 
-
 app.get('/countries/name/:name', async (req, res) => {
   const name= req.params.name;
   try{
