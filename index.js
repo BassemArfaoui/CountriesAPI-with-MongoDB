@@ -98,6 +98,14 @@ console.log(result);
 return result;
 }
 
+async function getCountriesByName(name){
+  const result = await Country.find({country_name:{ $regex:`^${name}`, $options:'i'}});
+  return result;
+  }
+  
+  
+
+
 
 
 
