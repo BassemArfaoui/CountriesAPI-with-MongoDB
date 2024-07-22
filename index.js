@@ -514,7 +514,26 @@ app.get('/countries/name/:name', async (req, res) => {
 });
 
 
+app.get('/countries/capital/:capital', async (req, res) => {
+  const capital= req.params.capital;
+  try{
+      const country_arr= await getCountriesByCapital(capital);
+      if (country_arr.length!==0)
+      {
+        res.json(country_arr);
+      }
+      else
+      {
+        res.status(404).json({Error:`No Country With capital starting with ${capital} `});
+      }
+    }
+    catch(err)
+    {
+      console.log(err.message);
+      res.status(404).json({Error:'Bad Input Type'})
+    }
 
+});
 
 
 
