@@ -478,7 +478,18 @@ app.get('/countries/capital/:capital', async (req, res) => {
 
 
 //post request
+app.post('/add', async (req, res) => {
 
+  try
+  {
+    const country = req.body;
+    const addedCountry = await addcountry(country);
+    res.json(addedCountry);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ Error: 'Bad resuest or Internal Server Error' });
+  }
+});
 
 
 
