@@ -399,7 +399,26 @@ app.get('/random', async (req, res) => {
 });
 
 
+app.get('/country/id/:id', async (req, res) => {
+  const id = req.params.id;
+  try{
+      const country= await getCountryById(id);
+      if (country)
+      {
+        res.json(country);
+      }
+      else 
+      {
+        res.status(404).json({Error:`No Country With ID ${id} `});
+      }
+    }
+    catch(err)
+    {
+      console.log(err.message);
+      res.status(404).json({Error:'Bad Input Or '+`No Country With ID ${id}`})
+    }
 
+});
 
 
 
