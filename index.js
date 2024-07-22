@@ -84,6 +84,16 @@ async function getCountryById(id)
 
 }
 
+async function getCountryByCode(code)
+{
+const result = await Country.findOne({country_code:code.toUpperCase()});
+console.log(result)
+return result;
+}
+
+
+
+
 
 
 
