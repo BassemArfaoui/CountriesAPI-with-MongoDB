@@ -200,37 +200,36 @@ async function authenticateUser(req, res, next){
 
 
 
-// async function requireApiKey (req, res, next){
-//   console.log(req.headers,'separator', req.query);
-//   const apiKey = req.headers.api_key || req.query.api_key;
+async function requireApiKey (req, res, next){
+  const apiKey = req.headers.api_key || req.query.api_key;
 
-//   if (!apiKey) {
-//     return res.status(401).json({ error: 'Missing API key' });
-//   }
+  if (!apiKey) {
+    return res.status(401).json({ error: 'Missing API key' });
+  }
 
-//   try {
-//     const apikeys=await getApiKeys();
-//     let test=false;
-//     for (const el of apikeys)
-//     {
-//       if(await bcrypt.compare(apiKey,el.api_key))
-//       {
-//         test=true;
-//         break;
-//       }
-//     }
+  try {
+    const apikeys=await getApiKeys();
+    let test=false;
+    for (const el of apikeys)
+    {
+      if(await bcrypt.compare(apiKey,el.apikey))
+      {
+        test=true;
+        break;
+      }
+    }
 
 
-//     if (!test) {
-//       return res.status(401).json({ error: 'Invalid API key' });
-//     }
+    if (!test) {
+      return res.status(401).json({ error: 'Invalid API key' });
+    }
 
-//     next();
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
+    next();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 // async function authenticateToken(req, res, next){
 //   const authHeader = req.headers.authorization;
@@ -342,7 +341,7 @@ app.get('/random', async (req, res) => {
 });
 
 
-app.get('/country/id/:id', async (req, res) => {
+app.get('/country/id/:id',requireApiKey, async (req, res) => {
   const id = req.params.id;
   try{
       const country= await getCountryById(id);
@@ -364,7 +363,7 @@ app.get('/country/id/:id', async (req, res) => {
 });
 
 
-app.get('/country/code/:code', async (req, res) => {
+app.get('/country/code/:code',requireApiKey,  async (req, res) => {
   const code= req.params.code;
   try{
       const country= await getCountryByCode(code);
@@ -386,7 +385,7 @@ app.get('/country/code/:code', async (req, res) => {
 });
 
 
-app.get('/countries/idd/:idd', async (req, res) => {
+app.get('/countries/idd/:idd',requireApiKey,  async (req, res) => {
   const idd= req.params.idd;
   try{
       const country_arr= await getCountryByIdd(idd);
@@ -408,7 +407,7 @@ app.get('/countries/idd/:idd', async (req, res) => {
 });
 
 
-app.get('/countries/name/:name', async (req, res) => {
+app.get('/countries/name/:name',requireApiKey,  async (req, res) => {
   const name= req.params.name;
   try{
       const country_arr= await getCountriesByName(name);
@@ -430,7 +429,7 @@ app.get('/countries/name/:name', async (req, res) => {
 });
 
 
-app.get('/countries/capital/:capital', async (req, res) => {
+app.get('/countries/capital/:capital',requireApiKey,  async (req, res) => {
   const capital= req.params.capital;
   try{
       const country_arr= await getCountriesByCapital(capital);
