@@ -114,31 +114,30 @@ async function addcountry(country)
   return country;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 async function updateCountry(id, updates) {
   const result= await Country.updateOne({_id:id},{$set:updates});
   console.log(result);
   return result;
 }
 
-
-
-
 async function deleteCountry(id)
 {
-  const result =await Country.deleteOne(id);
+  const result =await Country.deleteOne({_id:id});
   return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // async function deleteAll()
 // {
@@ -512,22 +511,21 @@ app.patch('/update/:id', async (req, res) => {
 
 
 
-// //delete request
-// app.delete('/delete/:id', authenticateToken,async (req, res) => {
-//   const countryId = req.params.id;
-
-//   try {
-//     const deletedCountry = await deleteCountry(countryId);
-//     if (deletedCountry.length!==0) {
-//       res.json({Success:'Country deleted successfully'});
-//     } else {
-//       res.status(404).json({ Error: 'Country not found' });
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ Error: 'Bad Input Type' });
-//   }
-// });
+ //delete request
+app.delete('/delete/:id', async (req, res) => {
+  const countryId = req.params.id;
+  try {
+    const deletedCountry = await deleteCountry(countryId);
+    if (deletedCountry.deletedCount>0) {
+      res.json({Success:'Country deleted successfully'});
+    } else {
+      res.status(404).json({ Error: 'Country not found' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ Error: 'Bad Request' });
+  }
+});
 
 // app.delete('countries/clear', authenticateToken,async (req, res) => {
 //   try {
