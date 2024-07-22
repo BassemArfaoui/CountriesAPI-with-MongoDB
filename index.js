@@ -489,6 +489,27 @@ app.get('/countries/idd/:idd', async (req, res) => {
 
 
 
+app.get('/countries/name/:name', async (req, res) => {
+  const name= req.params.name;
+  try{
+      const country_arr= await getCountriesByName(name);
+      if (country_arr.length!==0)
+      {
+        res.json(country_arr);
+      }
+      else
+      {
+        res.status(404).json({Error:`No Country With name starting with ${name}`});
+      }
+    }
+    catch(err)
+    {
+      console.log(err.message);
+      res.status(404).json({Error:'Bad Input Type'})
+    }
+
+});
+
 
 
 
