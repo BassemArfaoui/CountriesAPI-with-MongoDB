@@ -580,7 +580,24 @@ app.get('/countries/capital/:capital', async (req, res) => {
 
 
 // //patch request
+app.patch('/update/:id', async (req, res) => {
+  const countryId = req.params.id;
+  const updates = req.body;
 
+  try {
+    // Update the country data
+    const updatedCountry = await updateCountry(countryId, updates);
+
+    if (updatedCountry.matchedCount>0) {
+      res.json(await getCountryById(countryId));
+    } else {
+      res.status(404).json({ error: 'Country not found' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: 'Internal Server Error or Bad input' });
+  }
+});
 
 
 
