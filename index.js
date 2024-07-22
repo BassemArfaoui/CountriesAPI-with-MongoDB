@@ -75,6 +75,16 @@ async function getRandomCountry() {
 
 }
 
+async function getCountryById(id)
+{
+
+  const result = await Country.findById(id);
+  console.log(result);
+  return result;
+
+}
+
+
 
 
 
