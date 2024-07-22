@@ -108,6 +108,11 @@ async function getCountriesByCapital(capital){
     return result;
 }
 
+async function addcountry(country)
+{
+  const result = await Country.create(country);
+  return country;
+}
 
 
 
@@ -126,6 +131,9 @@ async function updateCountry(id, updates) {
   return result;
 }
 
+
+
+
 // async function deleteCountry(id)
 // {
 //   const result = await db.query("DELETE FROM countries WHERE id = $1 RETURNING *", [id]);
@@ -138,68 +146,6 @@ async function updateCountry(id, updates) {
 //   return result.rows;
 // }
 
-// async function addCountry(
-//   country_code = null,
-//   country_name = null,
-//   country_alpha3_code = null,
-//   country_numeric_code = null,
-//   capital = null,
-//   country_demonym = null,
-//   total_area = null,
-//   population = null,
-//   idd_code = null,
-//   currency_code = null,
-//   currency_name = null,
-//   currency_symbol = null,
-//   language_code = null,
-//   language_name = null,
-//   cctld = null
-// ) {
-//   const query = `
-//     INSERT INTO countries (
-//       country_code,
-//       country_name,
-//       country_alpha3_code,
-//       country_numeric_code,
-//       capital,
-//       country_demonym,
-//       total_area,
-//       population,
-//       idd_code,
-//       currency_code,
-//       currency_name,
-//       currency_symbol,
-//       language_code,
-//       language_name,
-//       cctld
-//     )
-//     VALUES (
-//       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
-//     )
-//     RETURNING *;
-//   `;
-
-//   const values = [
-//     country_code,
-//     country_name,
-//     country_alpha3_code,
-//     country_numeric_code,
-//     capital,
-//     country_demonym,
-//     total_area,
-//     population,
-//     idd_code,
-//     currency_code,
-//     currency_name,
-//     currency_symbol,
-//     language_code,
-//     language_name,
-//     cctld,
-//   ];
-
-//   const result = await db.query(query, values);
-//   return result.rows[0];
-// }
 
 // async function addUser(email,password){
 //   const result=await db.query("INSERT INTO users (email, password) VALUES ($1, $2) returning *", [email, password]);
@@ -531,51 +477,8 @@ app.get('/countries/capital/:capital', async (req, res) => {
 
 
 
-// //post request
-// app.post('/add', async (req, res) => {
-//   const {
-//     country_code,
-//     country_name,
-//     country_alpha3_code,
-//     country_numeric_code,
-//     capital,
-//     country_demonym,
-//     total_area,
-//     population,
-//     idd_code,
-//     currency_code,
-//     currency_name,
-//     currency_symbol,
-//     language_code,
-//     language_name,
-//     cctld,
-//   } = req.body;
+//post request
 
-//   try {
-//     const newCountry = await addCountry(
-//       country_code,
-//       country_name,
-//       country_alpha3_code,
-//       country_numeric_code,
-//       capital,
-//       country_demonym,
-//       total_area,
-//       population,
-//       idd_code,
-//       currency_code,
-//       currency_name,
-//       currency_symbol,
-//       language_code,
-//       language_name,
-//       cctld
-//     );
-
-//     res.status(201).json(newCountry);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(400).json({ Error: 'Something went wrong' });
-//   }
-// });
 
 
 
