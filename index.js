@@ -134,11 +134,11 @@ async function updateCountry(id, updates) {
 
 
 
-// async function deleteCountry(id)
-// {
-//   const result = await db.query("DELETE FROM countries WHERE id = $1 RETURNING *", [id]);
-//   return result.rows;
-// }
+async function deleteCountry(id)
+{
+  const result =await Country.deleteOne(id);
+  return result;
+}
 
 // async function deleteAll()
 // {
@@ -475,8 +475,6 @@ app.get('/countries/capital/:capital', async (req, res) => {
 
 
 
-
-
 //post request
 app.post('/add', async (req, res) => {
 
@@ -490,7 +488,6 @@ app.post('/add', async (req, res) => {
     res.status(400).json({ Error: 'Bad resuest or Internal Server Error' });
   }
 });
-
 
 
 //patch request
