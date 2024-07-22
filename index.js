@@ -141,17 +141,16 @@ async function addApiKey(api)
 
 
 
-// async function getApiKeys()
-// {
-//   const result = await db.query("SELECT api_key FROM apikeys");
-//   return result.rows;
-// }
+async function getApiKeys()
+{
+  const result = await Apikey.find().select('apikey');
+  return result;
+}
 
 
 
 
-
-// // sync functions
+// sync functions
 function checkPassword(password){
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{8,}$/;
   return passwordRegex.test(password);
@@ -174,7 +173,7 @@ app.use(express.json());
 
 
 
-// //custom middleware
+//custom middleware
 // async function authenticateUser(req, res, next){
 //   const credentials = auth(req);
 
@@ -523,9 +522,7 @@ app.delete('/countries/clear', async (req, res) => {
 });
 
 
-
-
-// //Authentification
+//Authentification
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
@@ -613,14 +610,14 @@ app.post('/bearerToken', async (req, res) => {
 
 
 
-// //documentation
-// app.get('/', async (req,res)=>{
+//documentation
+app.get('/', async (req,res)=>{
 
-// });
+});
 
 
 
-// //server
+ //server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
