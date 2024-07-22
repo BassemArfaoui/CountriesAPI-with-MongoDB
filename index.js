@@ -25,20 +25,13 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 
 //mongodb conection 
-async function con() {
+async function connection() {
   await mongoose.connect('mongodb://127.0.0.1:27017/countries');
   console.log("database connected")
 }
-con().catch(err => console.log(err));
+connection().catch(err => console.log(err));
 
-//create a document :
-const user1=new User ({
-  email : 'bassem@bassem',
-  password : 'XXXXXX'
 
-})
-
-user1.save();
 
 
 
@@ -127,18 +120,6 @@ async function deleteCountry(id)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 async function deleteAll()
 {
   const result =await Country.deleteMany({});
@@ -146,17 +127,19 @@ async function deleteAll()
   return {Success:"All countries deleted"};
 }
 
+async function addUser(email,password){
+  const result=await User.create({email:email,password:password});
+  return result;
+}
 
-// async function addUser(email,password){
-//   const result=await db.query("INSERT INTO users (email, password) VALUES ($1, $2) returning *", [email, password]);
-//   return result.rows;
-// }
 
-// async function addApiKey(api)
-// {
-//   const result = await db.query("INSERT INTO apikeys (api_key) VALUES ($1) returning *", [api]);
-//   return result.rows;
-// }
+async function addApiKey(api)
+{
+  const result = await Apikey.create({apikey:api});
+  return result;
+}
+
+
 
 // async function getApiKeys()
 // {
@@ -169,15 +152,12 @@ async function deleteAll()
 
 
 // // sync functions
-// function checkPassword(password){
-//   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{8,}$/;
-//   return passwordRegex.test(password);
-// }
+function checkPassword(password){
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{8,}$/;
+  return passwordRegex.test(password);
+}
 
-// function generateApiKey(length) {
-//   const bytes = crypto.randomBytes(length);
-//   return bytes.toString('hex');
-// }
+
 
 
 
@@ -529,7 +509,6 @@ app.delete('/delete/:id', async (req, res) => {
 });
 
 
-
 app.delete('/countries/clear', async (req, res) => {
   try {
     const deletedCountries = await deleteAll();
@@ -544,54 +523,43 @@ app.delete('/countries/clear', async (req, res) => {
 
 
 // //Authentification
-// app.post('/register', async (req, res) => {
-//   const { email, password } = req.body;
+app.post('/register', async (req, res) => {
+  const { email, password } = req.body;
 
-//   try {
-//     // Check if the user already exists
-//     const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-//     if (checkResult.rows.length > 0) {
-//       return res.status(400).json({ Error: 'User already exists' });
-//     }
+  try {
+    // Check if the user already exists
+    const checkResult = await User.find({email:email});
+    if (checkResult.length > 0) {
+      return res.status(400).json({ Error: 'User already exists' });
+    }
 
-//     // Password strength checks
-//     if (!checkPassword(password)) {
-//       return res.status(400).json({
-//         Error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.'
-//       });
-//     }
+    // Password strength checks
+    if (!checkPassword(password)) {
+      return res.status(400).json({
+        Error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.'
+      });
+    }
 
-//     // Hash the password
-//     bcrypt.hash(password, saltRounds, async (err, hash) => {
-//       if (err) {
-//         console.error('Error hashing password:', err);
-//         return res.status(500).json({ Error: 'Internal Server Error' });
-//       }
+    // Hash the password
+    bcrypt.hash(password, saltRounds, async (err, hash) => {
+      if (err) {
+        console.error('Error hashing password:', err);
+        return res.status(500).json({ Error: 'Internal Server Error' });
+      }
 
-//       // Add the user to the database
-//       const result = await addUser(email, hash);
-//       return res.status(201).json(result);
-//     });
-//   } catch (err) {
-//     console.log(err.message);
-//     return res.status(500).json({ Error: 'Internal Server Error' });
-//   }
-// });
+      // Add the user to the database
+      const result = await addUser(email, hash);
+      return res.status(201).json(result);
+    });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ Error: 'Internal Server Error' });
+  }
+});
 
-// app.get('/apikey',async (req, res) => {
-//   try
-//   {
-//     const api=generateApiKey(25);
-//     const hashed_api=await bcrypt.hash(api, saltRounds);
-//     const result=await addApiKey(hashed_api);
-//     res.json({API_Key:api});
-//   }
-//   catch(err)
-//   {
-//     console.log(err.message);
-//     res.status(500).json({Error:'Something went wrong ,Please Try again'});
-//   }
-// })
+
+
+
 
 // app.post('/bearerToken', async (req, res) => {
 //   const { email, password } = req.body;
