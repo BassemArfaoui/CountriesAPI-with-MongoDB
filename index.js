@@ -579,7 +579,7 @@ app.get('/countries/capital/:capital', async (req, res) => {
 
 
 
-// //patch request
+//patch request
 app.patch('/update/:id', async (req, res) => {
   const countryId = req.params.id;
   const updates = req.body;
